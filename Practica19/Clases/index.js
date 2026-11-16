@@ -1,4 +1,5 @@
 //clase de pruebas para la POO en js
+//Edgar Urias 261147
 
 import Estudiante from "./estudiante.js";
 

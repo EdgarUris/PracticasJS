@@ -1,3 +1,6 @@
+//clase del objeto estudiante
+//Edgar Urias 261147
+
 import Persona from "./persona.js"
 
 //el estudiante es hijo de la clase persona, el super insancia los atributos del padre

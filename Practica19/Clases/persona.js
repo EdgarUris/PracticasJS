@@ -1,5 +1,6 @@
 //clase padre, utiliza el default en el export para poder importarlo 
 //sin necesidad de los {}
+//Edgar Urias 261147
 
 export default class Persona{
     //constructor de la clase persona
