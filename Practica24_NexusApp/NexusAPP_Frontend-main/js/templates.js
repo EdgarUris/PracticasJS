@@ -17,6 +17,15 @@
 /** Convierte "2026-11-24T23:09:24.57" en una fecha legible. Úsala para la FECHA del post. */
 const formatDate = (isoDate) => new Date(isoDate).toLocaleString('es-MX');
 
+/** se veia raro y hay caracteres que no se ven bien*/
+const escapeHtml = (value) => String(value).replace(/[&<>"']/g, (character) => ({
+    '&': '&amp;',
+    '<': '&lt;',
+    '>': '&gt;',
+    '"': '&quot;',
+    "'": '&#39;'
+}[character]));
+
 /** Avatar con las iniciales de un nombre (servicio gratuito ui-avatars.com). */
 const avatarUrl = (name, background = 'random') =>
     `https://ui-avatars.com/api/?name=${encodeURIComponent(name)}&background=${background}&color=fff`;
@@ -59,7 +68,7 @@ export const postCardTemplate = (post) => `
     </div>
     <div class="post-actions">
         <button class="action-btn"><i class="far fa-thumbs-up"></i> Me gusta</button>
-        <button class="action-btn"><i class="far fa-comment"></i> Comentar</button>
+        <button type="button" class="action-btn comment-action"><i class="far fa-comment"></i> Comentar</button>
     </div>
 `;
 
@@ -102,14 +111,14 @@ export const postModalTemplate = () => `
  * Sección de comentarios de un post: la lista y el campo para escribir.
  * Se agrega al final de la tarjeta del post.
  *
- * TODO: POST_ID → post.id (2 lugares)   USUARIO → currentUser.username
  */
 export const commentsSectionTemplate = (post, currentUser) => `
     <div class="comments-section">
-        <div class="comments-list" id="comments-${post.id}"></div>
-        <form class="comment-form" data-post-id="${post.id}">
+        <div class="comments-list" id="comments-${escapeHtml(post.id)}"></div>
+        <form class="comment-form" data-post-id="${escapeHtml(post.id)}">
             <img class="avatar" style="width: 32px; height: 32px;" src="${avatarUrl(currentUser.username)}" alt="Avatar">
             <input type="text" class="comment-input" placeholder="Escribe un comentario..." required>
+            <button type="submit" class="action-btn">Enviar</button>
         </form>
     </div>
 `;
@@ -117,14 +126,13 @@ export const commentsSectionTemplate = (post, currentUser) => `
 /**
  * Burbuja de un comentario. Se inyecta en #comments-{postId}.
  *
- * TODO: AUTOR → comment.user.username (2 lugares)   TEXTO → comment.text
  */
 export const commentTemplate = (comment) => `
     <div class="comment">
-        <img class="avatar" style="width: 32px; height: 32px;" src="${avatarUrl(comment.user.username)}" alt="Avatar">
+        <img class="avatar" style="width: 32px; height: 32px;" src="${avatarUrl(comment.user.username)}" alt="${escapeHtml(comment.user.username)}">
         <div class="comment-bubble">
-            <div class="comment-user">${comment.user.username}</div>
-            <div class="comment-text">${comment.text}</div>
+            <div class="comment-user">${escapeHtml(comment.user.username)}</div>
+            <div class="comment-text">${escapeHtml(comment.text)}</div>
         </div>
     </div>
 `;

@@ -68,6 +68,11 @@ function setupEventListeners() {
     //
     // TODO: 4. Escuchar 'submit' en modalRoot y pasarle la función createPost
     modalRoot.addEventListener('submit', createPost);
+    postsContainer.addEventListener('click', (e) => {
+        if (!e.target.closest('.comment-action')) return;
+        e.target.closest('.post-card').querySelector('.comment-input').focus();
+    });
+    postsContainer.addEventListener('submit', createComment);
 }
 
 /**
@@ -163,7 +168,29 @@ async function createPost(e) {
     }catch(error){
         handleError(error);
     }
+}
 
+async function createComment(e) {
+    const form = e.target;
+    if (!form.matches('.comment-form')) return;
+
+    e.preventDefault();
+    const input = form.querySelector('.comment-input');
+    input.value = input.value.trim();
+    if (!input.reportValidity()) return;
+
+    const submitButton = form.querySelector('[type="submit"]');
+    submitButton.disabled = true;
+    try {
+        const comment = await CommentService.hacerComentario(input.value, form.dataset.postId);
+        const commentsList = form.closest('.comments-section').querySelector('.comments-list');
+        commentsList.insertAdjacentHTML('beforeend', commentTemplate(comment));
+        input.value = '';
+    } catch (error) {
+        handleError(error);
+    } finally {
+        submitButton.disabled = false;
+    }
 }
 
 /**
